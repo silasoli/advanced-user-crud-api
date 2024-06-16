@@ -1,11 +1,7 @@
-import { ConnectionOptions } from 'typeorm';
-import * as dotenv from 'dotenv';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+// import * as dotenv from 'dotenv';
 
-if (process.env.NODE_ENV === 'local') {
-  dotenv.config({ path: './env/local.env' });
-}
-
-const config: ConnectionOptions = {
+const config: PostgresConnectionOptions = {
   type: 'postgres',
   host: process.env.DATABASE_HOST,
   port: parseInt(process.env.DATABASE_PORT),
@@ -22,6 +18,5 @@ const config: ConnectionOptions = {
   // },
 };
 
-console.log(config);
 
 export default config;
