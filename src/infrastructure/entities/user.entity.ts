@@ -12,22 +12,34 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index({ unique: true })
-  @Column('varchar', { unique: true })
-  username: string;
+  @Column()
+  name: string;
 
-  @Column('text')
+  @Index({ unique: true })
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
   password: string;
 
-  @CreateDateColumn({ name: 'createdate' })
-  createdate: Date;
-
-  @UpdateDateColumn({ name: 'updateddate' })
-  updateddate: Date;
+  @Column({ nullable: true })
+  access_token: string;
 
   @Column({ nullable: true })
-  last_login?: Date;
+  refresh_token: string;
 
-  @Column('varchar', { nullable: true })
-  hach_refresh_token: string;
+  @Column({ nullable: true })
+  role: string;
+
+  @Column({ nullable: true })
+  expires_at: Date;
+
+  @Column({ default: false })
+  active: boolean;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updated_at: Date;
 }
