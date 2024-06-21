@@ -11,58 +11,34 @@ export class DatabaseUserRepository implements UserRepository {
     @InjectRepository(User)
     private readonly userEntityRepository: Repository<User>,
   ) {}
-  async updateRefreshToken(
-    username: string,
-    refreshToken: string,
-  ): Promise<void> {
-    await this.userEntityRepository.update(
-      {
-        username: username,
-      },
-      { hach_refresh_token: refreshToken },
-    );
-  }
-  async getUserByUsername(username: string): Promise<UserM> {
-    const adminUserEntity = await this.userEntityRepository.findOne({
-      where: {
-        username: username,
-      },
+
+  async getUserById(id: number): Promise<UserM> {
+    const user = await this.userEntityRepository.findOne({
+      where: { id },
     });
-    if (!adminUserEntity) {
-      return null;
-    }
-    return this.toUser(adminUserEntity);
-  }
-  async updateLastLogin(username: string): Promise<void> {
-    await this.userEntityRepository.update(
-      {
-        username: username,
-      },
-      { last_login: () => 'CURRENT_TIMESTAMP' },
-    );
+
+    if (!user) return null;
+
+    return this.toUser(user);
   }
 
-  private toUser(adminUserEntity: User): UserM {
-    const adminUser: UserM = new UserM();
-
-    adminUser.id = adminUserEntity.id;
-    adminUser.username = adminUserEntity.username;
-    adminUser.password = adminUserEntity.password;
-    adminUser.createDate = adminUserEntity.createdate;
-    adminUser.updatedDate = adminUserEntity.updateddate;
-    adminUser.lastLogin = adminUserEntity.last_login;
-    adminUser.hashRefreshToken = adminUserEntity.hach_refresh_token;
-
-    return adminUser;
+  async updateRefreshToken(id: number, refresh_token: string): Promise<void> {
+    await this.userEntityRepository.update({ id }, { refresh_token });
   }
 
-  private toUserEntity(adminUser: UserM): User {
-    const adminUserEntity: User = new User();
+  private toUser(userEntity: User): UserM {
+    const user: UserM = { ...userEntity };
 
-    adminUserEntity.username = adminUser.username;
-    adminUserEntity.password = adminUser.password;
-    adminUserEntity.last_login = adminUser.lastLogin;
-
-    return adminUserEntity;
+    return user;
   }
+
+  // private toUserEntity(adminUser: UserM): User {
+  //   const adminUserEntity: User = new User();
+
+  //   adminUserEntity.username = adminUser.username;
+  //   adminUserEntity.password = adminUser.password;
+  //   adminUserEntity.last_login = adminUser.lastLogin;
+
+  //   return adminUserEntity;
+  // }
 }
