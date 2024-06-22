@@ -19,8 +19,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
-  async validate(username: string, password: string) {
-    if (!username || !password) {
+  async validate(id: number, password: string) {
+    if (!id || !password) {
       this.logger.warn(
         'LocalStrategy',
         `Username or password is missing, BadRequestException`,
@@ -29,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
     const user = await this.loginUsecaseProxy
       .getInstance()
-      .validateUserForLocalStragtegy(username, password);
+      .validateUserForLocalStragtegy(id, password);
     if (!user) {
       this.logger.warn('LocalStrategy', `Invalid username or password`);
       this.exceptionService.UnauthorizedException({

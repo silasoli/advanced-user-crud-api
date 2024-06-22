@@ -3,7 +3,6 @@ export class UserWithoutPassword {
   name: string;
   email: string;
   salt: string;
-  password: string;
   access_token: string;
   refresh_token: string;
   role: string;

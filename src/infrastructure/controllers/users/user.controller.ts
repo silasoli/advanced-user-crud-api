@@ -1,36 +1,11 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Inject,
-  Post,
-  Req,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiExtraModels,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-
-import { AuthLoginDto } from './auth-dto.class';
-import { IsAuthPresenter } from './auth.presenter';
-
-import JwtRefreshGuard from '../../common/guards/jwtRefresh.guard';
-import { JwtAuthGuard } from '../../common/guards/jwtAuth.guard';
-import { LoginGuard } from '../../common/guards/login.guard';
+import { Controller, Inject } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';
 import { LoginUseCases } from '../../../usecases/auth/login.usecases';
 import { IsAuthenticatedUseCases } from '../../../usecases/auth/isAuthenticated.usecases';
 import { LogoutUseCases } from '../../../usecases/auth/logout.usecases';
-
-import { ApiResponseType } from '../../common/swagger/response.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -48,5 +23,4 @@ export class UserController {
     @Inject(UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY)
     private readonly isAuthUsecaseProxy: UseCaseProxy<IsAuthenticatedUseCases>,
   ) {}
- 
 }

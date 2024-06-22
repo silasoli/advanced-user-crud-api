@@ -9,36 +9,34 @@ import { User } from '../entities/user.entity';
 export class DatabaseUserRepository implements UserRepository {
   constructor(
     @InjectRepository(User)
-    private readonly userEntityRepository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {}
 
-  async getUserById(id: number): Promise<UserM> {
-    const user = await this.userEntityRepository.findOne({
+  async create(data: UserM): Promise<UserM> {
+    const user = this.repository.create(data);
+    return this.repository.save(user);
+  }
+
+  async updateById(id: number, data: Partial<UserM>): Promise<void> {
+    await this.repository.update({ id }, { ...data });
+  }
+
+  async deleteOneById(id: number): Promise<void> {
+    await this.repository.delete({ id });
+  }
+
+
+  async findOneById(id: number): Promise<UserM> {
+    const user = await this.repository.findOne({
       where: { id },
     });
 
     if (!user) return null;
 
-    return this.toUser(user);
-  }
-
-  async updateRefreshToken(id: number, refresh_token: string): Promise<void> {
-    await this.userEntityRepository.update({ id }, { refresh_token });
-  }
-
-  private toUser(userEntity: User): UserM {
-    const user: UserM = { ...userEntity };
-
     return user;
   }
 
-  // private toUserEntity(adminUser: UserM): User {
-  //   const adminUserEntity: User = new User();
-
-  //   adminUserEntity.username = adminUser.username;
-  //   adminUserEntity.password = adminUser.password;
-  //   adminUserEntity.last_login = adminUser.lastLogin;
-
-  //   return adminUserEntity;
-  // }
+  async updateRefreshToken(id: number, refresh_token: string): Promise<void> {
+    await this.repository.update({ id }, { refresh_token });
+  }
 }
