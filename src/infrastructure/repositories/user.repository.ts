@@ -25,7 +25,6 @@ export class DatabaseUserRepository implements UserRepository {
     await this.repository.delete({ id });
   }
 
-
   async findOneById(id: number): Promise<UserM> {
     const user = await this.repository.findOne({
       where: { id },

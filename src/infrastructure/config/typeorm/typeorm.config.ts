@@ -18,5 +18,4 @@ const config: PostgresConnectionOptions = {
   // },
 };
 
-
 export default config;

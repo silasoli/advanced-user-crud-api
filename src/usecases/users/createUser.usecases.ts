@@ -27,6 +27,6 @@ export class createUserUseCases {
 
     const created = await this.userRepository.create({ ...dto, active: true });
 
-    return created
+    return created;
   }
 }
