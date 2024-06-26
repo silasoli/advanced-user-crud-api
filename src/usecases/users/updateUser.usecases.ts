@@ -3,29 +3,28 @@ import { ILogger } from '../../domain/logger/logger.interface';
 import { UserM } from '../../domain/model/user';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
 
-export class CreateUserUseCases {
+export class UpdateUserUseCases {
   constructor(
     private readonly logger: ILogger,
     private readonly userRepository: UserRepository,
     private readonly bcryptService: IBcryptService,
   ) {}
 
-  public async transformBody(dto: { password: string }) {
+  public async transformBody(dto: UserM) {
     if (dto.password)
       dto.password = await this.bcryptService.hash(dto.password);
   }
 
-  async execute(dto: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<UserM> {
-    this.logger.log('Create User UseCases execute', `DTO: ${dto}`);
+  async execute(id: number, dto: UserM): Promise<UserM> {
+    this.logger.log('Update User UseCases execute', `ID: ${id}, DTO: ${dto}`);
 
     await this.transformBody(dto);
 
-    const created = await this.userRepository.create({ ...dto });
+    await this.userRepository.updateById(id, {
+      ...dto,
+      active: true,
+    });
 
-    return created;
+    return this.userRepository.findOneById(id);
   }
 }

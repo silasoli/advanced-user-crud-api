@@ -35,7 +35,7 @@ export class DatabaseUserRepository implements UserRepository {
     return user;
   }
 
-  async updateRefreshToken(id: number, refresh_token: string): Promise<void> {
-    await this.repository.update({ id }, { refresh_token });
+  async find(): Promise<UserM[]> {
+    return this.repository.find();
   }
 }

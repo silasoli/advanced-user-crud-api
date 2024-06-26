@@ -18,6 +18,7 @@ import { DatabaseUserRepository } from '../repositories/user.repository';
 import { EnvironmentConfigModule } from '../config/environment-config/environment-config.module';
 import { EnvironmentConfigService } from '../config/environment-config/environment-config.service';
 import { UseCaseProxy } from './usecases-proxy';
+import { CreateUserUseCases } from '../../usecases/users/createUser.usecases';
 
 @Module({
   imports: [
@@ -34,6 +35,9 @@ export class UsecasesProxyModule {
   static LOGIN_USECASES_PROXY = 'LoginUseCasesProxy';
   static IS_AUTHENTICATED_USECASES_PROXY = 'IsAuthenticatedUseCasesProxy';
   static LOGOUT_USECASES_PROXY = 'LogoutUseCasesProxy';
+
+  // User
+  static CREATE_USER_USECASES_PROXY = 'CreateUserUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -76,11 +80,25 @@ export class UsecasesProxyModule {
           provide: UsecasesProxyModule.LOGOUT_USECASES_PROXY,
           useFactory: () => new UseCaseProxy(new LogoutUseCases()),
         },
+        {
+          inject: [LoggerService, DatabaseUserRepository, BcryptService],
+          provide: UsecasesProxyModule.CREATE_USER_USECASES_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            userRepo: DatabaseUserRepository,
+            bcryptService: BcryptService,
+          ) =>
+            new UseCaseProxy(
+              new CreateUserUseCases(logger, userRepo, bcryptService),
+            ),
+        },
       ],
       exports: [
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
+
+        UsecasesProxyModule.CREATE_USER_USECASES_PROXY,
       ],
     };
   }

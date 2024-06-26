@@ -65,7 +65,7 @@ export class LoginUseCases {
   async setCurrentRefreshToken(id: number, refreshToken: string) {
     const currentRefreshToken = await this.bcryptService.hash(refreshToken);
 
-    await this.userRepository.updateRefreshToken(id, currentRefreshToken);
+    // await this.userRepository.updateRefreshToken(id, currentRefreshToken);
   }
 
   async getUserIfRefreshTokenMatches(id: number, refreshToken: string) {
