@@ -1,7 +1,8 @@
 import { IBcryptService } from '../../domain/adapters/bcrypt.interface';
 import { ILogger } from '../../domain/logger/logger.interface';
-import { UserM } from '../../domain/model/user';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
+import { CreateUserDto } from '../../shared/user/dtos/create-user.dto';
+import { UserResponseDto } from '../../shared/user/responses/user-response.dto';
 
 export class CreateUserUseCases {
   constructor(
@@ -15,17 +16,13 @@ export class CreateUserUseCases {
       dto.password = await this.bcryptService.hash(dto.password);
   }
 
-  async execute(dto: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<UserM> {
+  async execute(dto: CreateUserDto): Promise<UserResponseDto> {
     this.logger.log('Create User UseCases execute', `DTO: ${dto}`);
 
     await this.transformBody(dto);
 
     const created = await this.userRepository.create({ ...dto });
 
-    return created;
+    return new UserResponseDto(created);
   }
 }

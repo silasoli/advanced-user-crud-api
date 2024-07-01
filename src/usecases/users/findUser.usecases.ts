@@ -1,6 +1,6 @@
 import { ILogger } from '../../domain/logger/logger.interface';
-import { UserM } from '../../domain/model/user';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
+import { UserResponseDto } from '../../shared/user/responses/user-response.dto';
 
 export class FindUserUseCases {
   constructor(
@@ -8,9 +8,11 @@ export class FindUserUseCases {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async execute(id: number): Promise<UserM[]> {
-    this.logger.log('Find User UseCases execute', `ID: ${id}`);
+  async execute(): Promise<UserResponseDto[]> {
+    this.logger.log('Find User UseCases execute', ``);
 
-    return this.userRepository.find();
+    const users = await this.userRepository.find();
+
+    return users.map((user) => new UserResponseDto(user));
   }
 }

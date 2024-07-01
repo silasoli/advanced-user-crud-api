@@ -1,7 +1,7 @@
 import { ILogger } from '../../domain/logger/logger.interface';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
 
-export class DeleteUserUseCases {
+export class DeleteOneUserUseCases {
   constructor(
     private readonly logger: ILogger,
     private readonly userRepository: UserRepository,

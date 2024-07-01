@@ -19,6 +19,10 @@ import { EnvironmentConfigModule } from '../config/environment-config/environmen
 import { EnvironmentConfigService } from '../config/environment-config/environment-config.service';
 import { UseCaseProxy } from './usecases-proxy';
 import { CreateUserUseCases } from '../../usecases/users/createUser.usecases';
+import { FindUserUseCases } from '../../usecases/users/findUser.usecases';
+import { FindOneUserUseCases } from '../../usecases/users/findOneUser.usecases';
+import { UpdateOneUserUseCases } from '../../usecases/users/updateOneUser.usecases';
+import { DeleteOneUserUseCases } from '../../usecases/users/deleteOneUser.usecases';
 
 @Module({
   imports: [
@@ -38,6 +42,10 @@ export class UsecasesProxyModule {
 
   // User
   static CREATE_USER_USECASES_PROXY = 'CreateUserUseCasesProxy';
+  static FIND_USER_USECASES_PROXY = 'FindUserUseCasesProxy';
+  static FIND_ONE_USER_USECASES_PROXY = 'FindOneUserUseCasesProxy';
+  static UPDATE_ONE_USER_USECASES_PROXY = 'UpdateOneUserUseCasesProxy';
+  static DELETE_ONE_USER_USECASES_PROXY = 'DeleteOneUserUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -80,6 +88,7 @@ export class UsecasesProxyModule {
           provide: UsecasesProxyModule.LOGOUT_USECASES_PROXY,
           useFactory: () => new UseCaseProxy(new LogoutUseCases()),
         },
+        //USER
         {
           inject: [LoggerService, DatabaseUserRepository, BcryptService],
           provide: UsecasesProxyModule.CREATE_USER_USECASES_PROXY,
@@ -92,13 +101,53 @@ export class UsecasesProxyModule {
               new CreateUserUseCases(logger, userRepo, bcryptService),
             ),
         },
+        {
+          inject: [LoggerService, DatabaseUserRepository],
+          provide: UsecasesProxyModule.FIND_USER_USECASES_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            userRepo: DatabaseUserRepository,
+          ) => new UseCaseProxy(new FindUserUseCases(logger, userRepo)),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository],
+          provide: UsecasesProxyModule.FIND_ONE_USER_USECASES_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            userRepo: DatabaseUserRepository,
+          ) => new UseCaseProxy(new FindOneUserUseCases(logger, userRepo)),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository, BcryptService],
+          provide: UsecasesProxyModule.UPDATE_ONE_USER_USECASES_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            userRepo: DatabaseUserRepository,
+            bcryptService: BcryptService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateOneUserUseCases(logger, userRepo, bcryptService),
+            ),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository],
+          provide: UsecasesProxyModule.DELETE_ONE_USER_USECASES_PROXY,
+          useFactory: (
+            logger: LoggerService,
+            userRepo: DatabaseUserRepository,
+          ) => new UseCaseProxy(new DeleteOneUserUseCases(logger, userRepo)),
+        },
       ],
       exports: [
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
-
+        //USER
         UsecasesProxyModule.CREATE_USER_USECASES_PROXY,
+        UsecasesProxyModule.FIND_USER_USECASES_PROXY,
+        UsecasesProxyModule.FIND_ONE_USER_USECASES_PROXY,
+        UsecasesProxyModule.UPDATE_ONE_USER_USECASES_PROXY,
+        UsecasesProxyModule.DELETE_ONE_USER_USECASES_PROXY,
       ],
     };
   }
