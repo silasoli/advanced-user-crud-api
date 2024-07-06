@@ -11,6 +11,7 @@ import { EnvironmentConfigModule } from './infrastructure/config/environment-con
 import { LocalStrategy } from './infrastructure/common/strategies/local.strategy';
 import { JwtStrategy } from './infrastructure/common/strategies/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './infrastructure/common/strategies/jwtRefresh.strategy';
+import { TypeOrmConfigModule } from './infrastructure/config/typeorm/typeorm.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtRefreshTokenStrategy } from './infrastructure/common/strategies/jwtR
     JwtModule.register({
       secret: process.env.secret,
     }),
+    TypeOrmConfigModule,
     LoggerModule,
     ExceptionsModule,
     UsecasesProxyModule.register(),

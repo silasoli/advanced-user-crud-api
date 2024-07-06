@@ -5,5 +5,4 @@ export interface DatabaseConfig {
   getDatabasePassword(): string;
   getDatabaseName(): string;
   getDatabaseSchema(): string;
-  getDatabaseSync(): boolean;
 }

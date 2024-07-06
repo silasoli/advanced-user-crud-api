@@ -24,30 +24,26 @@ export class EnvironmentConfigService implements DatabaseConfig, JWTConfig {
   }
 
   getDatabaseHost(): string {
-    return this.configService.get<string>('DATABASE_HOST');
+    return this.configService.get<string>('DB_HOST');
   }
 
   getDatabasePort(): number {
-    return this.configService.get<number>('DATABASE_PORT');
+    return this.configService.get<number>('DB_PORT');
   }
 
   getDatabaseUser(): string {
-    return this.configService.get<string>('DATABASE_USER');
+    return this.configService.get<string>('DB_USER');
   }
 
   getDatabasePassword(): string {
-    return this.configService.get<string>('DATABASE_PASSWORD');
+    return this.configService.get<string>('DB_PASS');
   }
 
   getDatabaseName(): string {
-    return this.configService.get<string>('DATABASE_NAME');
+    return this.configService.get<string>('DB_NAME');
   }
 
   getDatabaseSchema(): string {
-    return this.configService.get<string>('DATABASE_SCHEMA');
-  }
-
-  getDatabaseSync(): boolean {
-    return this.configService.get<boolean>('DATABASE_SYNCHRONIZE');
+    return this.configService.get<string>('DB_SCHEMA');
   }
 }

@@ -28,19 +28,17 @@ class EnvironmentVariables {
   JWT_REFRESH_TOKEN_EXPIRATION_TIME: string;
 
   @IsString()
-  DATABASE_HOST: string;
+  DB_HOST: string;
   @IsNumber()
-  DATABASE_PORT: number;
+  DB_PORT: number;
   @IsString()
-  DATABASE_USER: string;
+  DB_USER: string;
   @IsString()
-  DATABASE_PASSWORD: string;
+  DB_PASS: string;
   @IsString()
-  DATABASE_NAME: string;
+  DB_NAME: string;
   @IsString()
-  DATABASE_SCHEMA: string;
-  @IsBoolean()
-  DATABASE_SYNCHRONIZE: boolean;
+  DB_SCHEMA: string;
 }
 
 export function validate(config: Record<string, unknown>) {
