@@ -1,4 +1,7 @@
-import { IBcryptService } from '../../domain/adapters/bcrypt.interface';
+import {
+  IBcryptService,
+  IHashPassword,
+} from '../../domain/adapters/bcrypt.interface';
 import { ILogger } from '../../domain/logger/logger.interface';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
 import { CreateUserDto } from '../../shared/user/dtos/create-user.dto';
@@ -11,17 +14,22 @@ export class CreateUserUseCases {
     private readonly bcryptService: IBcryptService,
   ) {}
 
-  public async transformBody(dto: { password: string }) {
-    if (dto.password)
-      dto.password = await this.bcryptService.hash(dto.password);
+  private async getSaltAndHashedPassword(
+    password: string,
+  ): Promise<IHashPassword> {
+    return this.bcryptService.hashPassword(password);
   }
 
   async execute(dto: CreateUserDto): Promise<UserResponseDto> {
     this.logger.log('Create User UseCases execute', `DTO: ${dto}`);
 
-    await this.transformBody(dto);
+    const { hash, salt } = await this.getSaltAndHashedPassword(dto.password);
 
-    const created = await this.userRepository.create({ ...dto });
+    const created = await this.userRepository.create({
+      ...dto,
+      password: hash,
+      salt,
+    });
 
     return new UserResponseDto(created);
   }

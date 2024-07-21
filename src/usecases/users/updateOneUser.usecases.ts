@@ -1,8 +1,15 @@
-import { IBcryptService } from '../../domain/adapters/bcrypt.interface';
+import {
+  IBcryptService,
+  IHashPassword,
+} from '../../domain/adapters/bcrypt.interface';
 import { ILogger } from '../../domain/logger/logger.interface';
 import { UserM } from '../../domain/model/user';
-import { UserRepository } from '../../domain/repositories/userRepository.interface';
+import {
+  ICreateUser,
+  UserRepository,
+} from '../../domain/repositories/userRepository.interface';
 import { UpdateUserDto } from '../../shared/user/dtos/update-user.dto';
+import { UserResponseDto } from '../../shared/user/responses/user-response.dto';
 
 export class UpdateOneUserUseCases {
   constructor(
@@ -11,20 +18,29 @@ export class UpdateOneUserUseCases {
     private readonly bcryptService: IBcryptService,
   ) {}
 
-  public async transformBody(dto: UpdateUserDto) {
-    if (dto.password)
-      dto.password = await this.bcryptService.hash(dto.password);
+  private async getSaltAndHashedPassword(
+    password: string,
+  ): Promise<IHashPassword> {
+    return this.bcryptService.hashPassword(password);
   }
 
-  async execute(id: number, dto: UpdateUserDto): Promise<UserM> {
+  async execute(id: number, dto: UpdateUserDto): Promise<UserResponseDto> {
     this.logger.log('Update User UseCases execute', `ID: ${id}, DTO: ${dto}`);
 
-    await this.transformBody(dto);
+    const raw = { ...dto } as Partial<ICreateUser>;
+
+    if (dto.password) {
+      const hashedPassword = await this.getSaltAndHashedPassword(dto.password);
+      raw.password = hashedPassword.hash;
+      raw.salt = hashedPassword.salt;
+    }
 
     await this.userRepository.updateById(id, {
-      ...dto,
+      ...raw,
     });
 
-    return this.userRepository.findOneById(id);
+    const user = await this.userRepository.findOneById(id);
+
+    return new UserResponseDto(user);
   }
 }

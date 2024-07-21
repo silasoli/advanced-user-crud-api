@@ -7,7 +7,8 @@ import {
 
 @Injectable()
 export class BcryptService implements IBcryptService {
-  rounds: number = 10;
+  private readonly rounds: number = Number(process.env.ROUNDS);
+  private readonly penauts: string = process.env.PASSWORD_PEANUTS;
 
   async hash(hashString: string): Promise<string> {
     return bcrypt.hash(hashString, this.rounds);
@@ -19,7 +20,7 @@ export class BcryptService implements IBcryptService {
 
   async hashPassword(password: string): Promise<IHashPassword> {
     const salt = await bcrypt.genSalt(this.rounds);
-    const combined = salt + '123' + password;
+    const combined = salt + this.penauts + password;
     const hash = await this.hash(combined);
     return { salt, hash };
   }
@@ -29,7 +30,7 @@ export class BcryptService implements IBcryptService {
     storedSalt: string,
     providedPassword: string,
   ): Promise<boolean> {
-    const combined = storedSalt + '123' + providedPassword;
+    const combined = storedSalt + this.penauts + providedPassword;
     return this.compare(combined, storedHash);
   }
 }
